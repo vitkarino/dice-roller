@@ -1,6 +1,10 @@
 <template>
   <div class="dice-roller">
-    <Icon :icon="currentDice" class="dice-icon" :class="{ animateDice: isAnimating }" />
+    <Icon
+      :icon="currentDice"
+      class="dice-icon"
+      :class="{ changeDiceAnimation: isChangingDice, rollAnimation: isRolling }"
+    />
   </div>
   <div class="dice-selection">
     <button class="select-button" id="left" @click="previousDice()">
@@ -11,7 +15,7 @@
       <Icon icon="ep:arrow-up" rotate="90deg" />
     </button>
   </div>
-  <button class="roll-button">Roll</button>
+  <button class="roll-button" @click="rollDice()">Roll</button>
 </template>
 
 <script>
@@ -30,34 +34,82 @@ export default {
       "mdi:dice-d20-outline",
     ];
 
-    const diceNames = ["d4", "d6", "d8", "d10", "d12", "d20"];
+    const diceNames = [
+      {
+        Name: "d4",
+        Roll: 4,
+      },
+      {
+        Name: "d6",
+        Roll: 6,
+      },
+      {
+        Name: "d8",
+        Roll: 8,
+      },
+      {
+        Name: "d10",
+        Roll: 10,
+      },
+      {
+        Name: "d12",
+        Roll: 12,
+      },
+      {
+        Name: "d20",
+        Roll: 20,
+      },
+    ];
+    var rollResult;
 
-    const isAnimating = ref(false);
+    const isChangingDice = ref(false);
+    const isRolling = ref(false);
     const currentDiceIndex = ref(0);
-    const diceName = computed(() => diceNames[currentDiceIndex.value]);
+    const diceName = computed(() => diceNames[currentDiceIndex.value].Name);
 
-    const animateDice = () => {
-      isAnimating.value = true;
-      setTimeout(() => (isAnimating.value = false), 300);
+    const animateRoll = () => {
+      isRolling.value = true;
+      setTimeout(() => (isRolling.value = false), 500); // match the duration of roll animations
+    };
+
+    const animateDiceChange = () => {
+      isChangingDice.value = true;
+      setTimeout(() => (isChangingDice.value = false), 200); // match the duration of dice change animations
     };
 
     const nextDice = async () => {
-      if (isAnimating.value) return;
+      if (isChangingDice.value || isRolling.value) return;
       if (currentDiceIndex.value < 5) {
-        animateDice();
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        currentDiceIndex.value = (currentDiceIndex.value + 1) % diceList.length;
+        animateDiceChange();
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        currentDiceIndex.value =
+          (currentDiceIndex.value + 1) % diceNames.length;
       }
     };
 
     const previousDice = async () => {
-      if (isAnimating.value) return;
+      if (isChangingDice.value || isRolling.value) return;
       if (currentDiceIndex.value > 0) {
-        animateDice();
-        await new Promise((resolve) => setTimeout(resolve, 200));
-        currentDiceIndex.value =
-          (currentDiceIndex.value - 1 + diceList.length) % diceList.length;
+        animateDiceChange();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      currentDiceIndex.value =
+        (currentDiceIndex.value - 1 + diceNames.length) % diceNames.length;
       }
+    };
+
+    const rollDice = () => {
+      if (isChangingDice.value || isRolling.value) return;
+      animateRoll();
+      setTimeout(() => {
+        rollResult = Math.floor(
+          Math.random() * diceNames[currentDiceIndex.value].Roll + 1
+        );
+        console.log(
+          `Rolled ${
+            diceNames[currentDiceIndex.value].Name
+          }, Result: ${rollResult}`
+        );
+      }, 300);
     };
 
     const currentDice = computed(() => diceList[currentDiceIndex.value]);
@@ -66,9 +118,12 @@ export default {
       currentDice,
       nextDice,
       previousDice,
-      isAnimating,
-      animateDice,
+      isChangingDice,
+      isRolling,
+      animateRoll,
+      animateDiceChange,
       diceName,
+      rollDice,
     };
   },
 };
@@ -84,22 +139,32 @@ export default {
 
   .dice-icon {
     font-size: 150px;
+
+    &.rollAnimation {
+      animation: roll 0.5s ease-in-out;
+    }
+    &.changeDiceAnimation {
+      animation: dice-animation 0.2s ease-in-out;
+    }
+  }
+}
+
+@keyframes dice-animation {
+  0% {
+    transform: translateY(-5%);
   }
 
-  .animateDice {
-    animation: dice-animation 0.5s;
+  50% {
+    transform: translateY(5%);
   }
+}
 
-  @keyframes dice-animation {
-    0% {
-      transform: translateY(-10%);
-      opacity: 1;
-    }
-
-    50% {
-      transform: translateY(10%);
-      opacity: 0;
-    }
+@keyframes roll {
+  0% {
+    transform: rotate(0deg) scale(0.8);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
   }
 }
 
