@@ -104,6 +104,7 @@ export default {
         rollResult = Math.floor(
           Math.random() * diceNames[currentDiceIndex.value].Roll + 1
         );
+        
         console.log(
           `Rolled ${
             diceNames[currentDiceIndex.value].Name

@@ -50,9 +50,10 @@ header {
 
     a {
       color: rgba($color: #000000, $alpha: 0.2);
+      transition: 0.2s;
       &:hover {
         color: rgba($color: #000000, $alpha: 1);
-        transition: 0.2s all;
+        transition: 0.2s;
       }
     }
   }

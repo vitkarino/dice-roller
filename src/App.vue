@@ -2,15 +2,17 @@
   <HeaderComponent />
   <div class="main-container">
     <DiceComponent />
+    <RollResultComponent />
   </div>
 </template>
 
 <script>
 import HeaderComponent from "./components/HeaderComponent.vue";
 import DiceComponent from "./components/DiceComponent.vue";
+import RollResultComponent from "./components/RollResultComponent.vue";
 
 export default {
-  components: { HeaderComponent, DiceComponent },
+  components: { HeaderComponent, DiceComponent, RollResultComponent },
 };
 </script>
 
