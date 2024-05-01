@@ -4,7 +4,7 @@
       changeDiceAnimation: isChangingDice,
       rollAnimation: isRolling,
     }">
-      <img class="dice-icon" :src="`/${diceName}.svg`" alt="" />
+      <img class="dice-icon" :src="`/${diceName}.svg`" alt="Dice icon"/>
       <span class="roll-result" :class="{ lowerPosition: isWrongSizing }">{{ rollResult }}</span>
       </img>
     </div>
@@ -14,7 +14,7 @@
       <Icon icon="ep:arrow-up" rotate="270deg" />
     </button>
     <span class="dice-name">{{ diceName }}</span>
-    <button class="select-button" id="right" @click="nextDice" :disabled="diceName === 'd20'">
+    <button class="select-button" id="right" @click="nextDice" :disabled="diceName === 'd100'">
       <Icon icon="ep:arrow-up" rotate="90deg" />
     </button>
   </div>
@@ -22,11 +22,11 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 export default {
   setup() {
-    const diceNames = ["d4", "d6", "d8", "d10", "d12", "d20"];
+    const diceNames = ["d4", "d6", "d8", "d10", "d12", "d20", "d100"];
     const rollResult = ref(1);
     const isChangingDice = ref(false);
     const isRolling = ref(false);
@@ -34,6 +34,13 @@ export default {
     const diceName = computed(() => `${diceNames[currentDiceIndex.value]}`);
 
     const isWrongSizing = computed(() => ['d12', 'd4'].includes(diceName.value));
+
+    onMounted(() => {
+      diceNames.forEach((dice) => {
+        const img = new Image();
+        img.src = `/${dice}.svg`;
+      })
+    })
 
     //Function to detect which animation should be running
     const toggleAnimation = (type, duration) => {
@@ -49,8 +56,8 @@ export default {
     //Function to change the dice (next or previous)
     const changeDice = (direction) => {
       if (isChangingDice.value || isRolling.value) return;
-      if (direction === 1 && currentDiceIndex.value === diceNames.length - 1) return; // Stop at last dice
-      if (direction === -1 && currentDiceIndex.value === 0) return; // Stop at first dice
+      if (direction === 1 && currentDiceIndex.value === diceNames.length - 1) return; 
+      if (direction === -1 && currentDiceIndex.value === 0) return; 
 
       toggleAnimation('change', 165);
       currentDiceIndex.value = (currentDiceIndex.value + direction + diceNames.length) % diceNames.length;
@@ -63,7 +70,7 @@ export default {
       toggleAnimation('roll', 500)
       setTimeout(() => {
         rollResult.value = Math.floor(Math.random() * parseInt(diceNames[currentDiceIndex.value].slice(1)) + 1);
-      }, 200);
+      }, 150);
     };
 
     return { diceName, rollResult, rollDice, nextDice: () => changeDice(1), previousDice: () => changeDice(-1), isWrongSizing, isChangingDice, isRolling };
@@ -158,7 +165,7 @@ export default {
 
   .dice-name {
     font-size: 24px;
-    width: 50px;
+    width: 60px;
     text-align: center;
   }
 }
