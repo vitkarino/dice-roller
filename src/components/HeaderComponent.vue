@@ -16,9 +16,7 @@
   </header>
 </template>
 
-<script>
-
-</script>
+<script></script>
 
 <style scoped lang="scss">
 header {
@@ -45,6 +43,13 @@ header {
     a {
       color: rgba($color: #000000, $alpha: 0.2);
       transition: 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
       &:hover {
         color: rgba($color: #000000, $alpha: 1);
       }
