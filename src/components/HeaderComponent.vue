@@ -29,6 +29,17 @@ header {
   flex-direction: column;
   color: rgba($color: #000000, $alpha: 0.3);
 
+  a {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+  }
+
   p {
     font-size: 20px;
     margin-bottom: 10px;
@@ -43,13 +54,16 @@ header {
     a {
       color: rgba($color: #000000, $alpha: 0.2);
       transition: 0.2s;
-      -webkit-tap-highlight-color: transparent;
+
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       -webkit-touch-callout: none;
       -webkit-user-select: none;
       -khtml-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
+      outline: none;
+
       &:hover {
         color: rgba($color: #000000, $alpha: 1);
       }

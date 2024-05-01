@@ -93,6 +93,13 @@ export default {
     position: relative;
     padding: 10px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
 
     &.rollAnimation {
       animation: roll 0.5s ease-in-out;
