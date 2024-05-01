@@ -4,7 +4,7 @@
       changeDiceAnimation: isChangingDice,
       rollAnimation: isRolling,
     }">
-      <img class="dice-icon" :src="`/public/${diceName}.svg`" alt="" />
+      <img class="dice-icon" :src="`/${diceName}.svg`" alt="" />
       <span class="roll-result" :class="{ lowerPosition: isWrongSizing }">{{ rollResult }}</span>
       </img>
     </div>
