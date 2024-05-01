@@ -40,6 +40,13 @@ button {
   border-radius: 25px;
   border: 2px solid black;
   transition: 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none; 
+  -webkit-user-select: none; 
+  -khtml-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  user-select: none; 
 
   .pop {
     transform: scale(1.2);
