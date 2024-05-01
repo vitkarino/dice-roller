@@ -2,17 +2,15 @@
   <HeaderComponent />
   <div class="main-container">
     <DiceComponent />
-    <RollResultComponent />
   </div>
 </template>
 
 <script>
 import HeaderComponent from "./components/HeaderComponent.vue";
 import DiceComponent from "./components/DiceComponent.vue";
-import RollResultComponent from "./components/RollResultComponent.vue";
 
 export default {
-  components: { HeaderComponent, DiceComponent, RollResultComponent },
+  components: { HeaderComponent, DiceComponent },
 };
 </script>
 
@@ -41,10 +39,10 @@ button {
   background: none;
   border-radius: 25px;
   border: 2px solid black;
-  transition: transform 0.2s;
+  transition: 0.2s;
 
   .pop {
-    transform: scale(1.2); /* Enlarge the button */
+    transform: scale(1.2); 
   }
 
   &:hover {

@@ -1,131 +1,71 @@
 <template>
   <div class="dice-roller">
-    <Icon
-      :icon="currentDice"
-      class="dice-icon"
-      :class="{ changeDiceAnimation: isChangingDice, rollAnimation: isRolling }"
-    />
+    <div class="dice" @click="rollDice()" :class="{
+      changeDiceAnimation: isChangingDice,
+      rollAnimation: isRolling,
+    }">
+      <img class="dice-icon" :src="`/public/${diceName}.svg`" alt="" />
+      <span class="roll-result" :class="{ lowerPosition: isWrongSizing }">{{ rollResult }}</span>
+      </img>
+    </div>
   </div>
   <div class="dice-selection">
-    <button class="select-button" id="left" @click="previousDice()">
+    <button class="select-button" id="left" @click="previousDice" :disabled="diceName === 'd4'">
       <Icon icon="ep:arrow-up" rotate="270deg" />
     </button>
     <span class="dice-name">{{ diceName }}</span>
-    <button class="select-button" id="right" @click="nextDice()">
+    <button class="select-button" id="right" @click="nextDice" :disabled="diceName === 'd20'">
       <Icon icon="ep:arrow-up" rotate="90deg" />
     </button>
   </div>
-  <button class="roll-button" @click="rollDice()">Roll</button>
+  <button class="roll-button" @click="rollDice">Roll</button>
 </template>
 
 <script>
 import { ref, computed } from "vue";
-import { Icon } from "@iconify/vue";
 
 export default {
-  components: { Icon },
   setup() {
-    const diceList = [
-      "mdi:dice-d4-outline",
-      "mdi:dice-d6-outline",
-      "mdi:dice-d8-outline",
-      "mdi:dice-d10-outline",
-      "mdi:dice-d12-outline",
-      "mdi:dice-d20-outline",
-    ];
-
-    const diceNames = [
-      {
-        Name: "d4",
-        Roll: 4,
-      },
-      {
-        Name: "d6",
-        Roll: 6,
-      },
-      {
-        Name: "d8",
-        Roll: 8,
-      },
-      {
-        Name: "d10",
-        Roll: 10,
-      },
-      {
-        Name: "d12",
-        Roll: 12,
-      },
-      {
-        Name: "d20",
-        Roll: 20,
-      },
-    ];
-    var rollResult;
-
+    const diceNames = ["d4", "d6", "d8", "d10", "d12", "d20"];
+    const rollResult = ref(1);
     const isChangingDice = ref(false);
     const isRolling = ref(false);
     const currentDiceIndex = ref(0);
-    const diceName = computed(() => diceNames[currentDiceIndex.value].Name);
+    const diceName = computed(() => `${diceNames[currentDiceIndex.value]}`);
 
-    const animateRoll = () => {
-      isRolling.value = true;
-      setTimeout(() => (isRolling.value = false), 500); // match the duration of roll animations
-    };
+    const isWrongSizing = computed(() => ['d12', 'd4'].includes(diceName.value));
 
-    const animateDiceChange = () => {
-      isChangingDice.value = true;
-      setTimeout(() => (isChangingDice.value = false), 200); // match the duration of dice change animations
-    };
-
-    const nextDice = async () => {
-      if (isChangingDice.value || isRolling.value) return;
-      if (currentDiceIndex.value < 5) {
-        animateDiceChange();
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        currentDiceIndex.value =
-          (currentDiceIndex.value + 1) % diceNames.length;
+    //Function to detect which animation should be running
+    const toggleAnimation = (type, duration) => {
+      if (type === 'roll') {
+        isRolling.value = true;
+        setTimeout(() => isRolling.value = false, duration);
+      } else {
+        isChangingDice.value = true;
+        setTimeout(() => isChangingDice.value = false, duration);
       }
     };
 
-    const previousDice = async () => {
+    //Function to change the dice (next or previous)
+    const changeDice = (direction) => {
       if (isChangingDice.value || isRolling.value) return;
-      if (currentDiceIndex.value > 0) {
-        animateDiceChange();
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      currentDiceIndex.value =
-        (currentDiceIndex.value - 1 + diceNames.length) % diceNames.length;
-      }
+      if (direction === 1 && currentDiceIndex.value === diceNames.length - 1) return; // Stop at last dice
+      if (direction === -1 && currentDiceIndex.value === 0) return; // Stop at first dice
+
+      toggleAnimation('change', 200);
+      currentDiceIndex.value = (currentDiceIndex.value + direction + diceNames.length) % diceNames.length;
     };
 
+    //Function to roll selected dice
     const rollDice = () => {
       if (isChangingDice.value || isRolling.value) return;
-      animateRoll();
+      toggleAnimation('roll', 500)
       setTimeout(() => {
-        rollResult = Math.floor(
-          Math.random() * diceNames[currentDiceIndex.value].Roll + 1
-        );
-        
-        console.log(
-          `Rolled ${
-            diceNames[currentDiceIndex.value].Name
-          }, Result: ${rollResult}`
-        );
-      }, 300);
+        rollResult.value = Math.floor(Math.random() * parseInt(diceNames[currentDiceIndex.value].slice(1)) + 1);
+      }, 200);
     };
 
-    const currentDice = computed(() => diceList[currentDiceIndex.value]);
-
-    return {
-      currentDice,
-      nextDice,
-      previousDice,
-      isChangingDice,
-      isRolling,
-      animateRoll,
-      animateDiceChange,
-      diceName,
-      rollDice,
-    };
+    return { diceName, rollResult, rollDice, nextDice: () => changeDice(1), previousDice: () => changeDice(-1), isWrongSizing, isChangingDice, isRolling };
   },
 };
 </script>
@@ -136,17 +76,47 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: row-reverse;
-  margin: 10px 0 10px 0;
+  user-select: none;
 
-  .dice-icon {
-    font-size: 150px;
+  .dice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 10px;
+    cursor: pointer;
 
     &.rollAnimation {
       animation: roll 0.5s ease-in-out;
     }
+
     &.changeDiceAnimation {
       animation: dice-animation 0.2s ease-in-out;
     }
+
+    .dice-icon {
+      width: 150px;
+    }
+
+    .roll-result {
+      position: absolute;
+      font-size: 42px;
+      font-weight: 800;
+
+      &.lowerPosition {
+        transform: translateY(7px);
+      }
+    }
+  }
+}
+
+@keyframes roll {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
 
@@ -157,15 +127,6 @@ export default {
 
   50% {
     transform: translateY(5%);
-  }
-}
-
-@keyframes roll {
-  0% {
-    transform: rotate(0deg) scale(0.8);
-  }
-  100% {
-    transform: rotate(360deg) scale(1);
   }
 }
 
@@ -182,8 +143,16 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: 0.1s all;
     cursor: pointer;
+
+    &.select-button[disabled] {
+      opacity: 0.5;
+      cursor: default;
+
+      &:hover {
+        background: none;
+      }
+    }
   }
 
   .dice-name {
@@ -195,7 +164,6 @@ export default {
 
 .roll-button {
   margin-top: 10px;
-  transition: 0.1s all;
   cursor: pointer;
 }
 </style>

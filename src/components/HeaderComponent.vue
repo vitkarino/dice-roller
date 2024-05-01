@@ -1,6 +1,6 @@
 <template>
   <header>
-    <p>Dice Roller by vitkarino - 2024</p>
+    <p>Made by Viktor Kysil</p>
     <div class="icons-container">
       <span class="icon">
         <a href="https://www.instagram.com/vitkarino">
@@ -17,18 +17,12 @@
 </template>
 
 <script>
-import { Icon } from "@iconify/vue";
 
-export default {
-  components: {
-    Icon,
-  },
-};
 </script>
 
 <style scoped lang="scss">
 header {
-  height: 10vh;
+  height: 12vh;
   width: 100%;
   display: flex;
   position: fixed;
@@ -53,7 +47,6 @@ header {
       transition: 0.2s;
       &:hover {
         color: rgba($color: #000000, $alpha: 1);
-        transition: 0.2s;
       }
     }
   }
