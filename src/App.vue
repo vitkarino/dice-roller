@@ -42,12 +42,18 @@ button {
   transition: 0.2s;
 
   .pop {
-    transform: scale(1.2); 
+    transform: scale(1.2);
   }
 
-  &:hover {
+  @media (min-width: 768px) {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      transition: 0.2s all;
+    }
+  }
+
+  &:active {
     background-color: rgba(0, 0, 0, 0.1);
-    transition: 0.2s all;
   }
 }
 </style>

@@ -52,8 +52,9 @@ export default {
       if (direction === 1 && currentDiceIndex.value === diceNames.length - 1) return; // Stop at last dice
       if (direction === -1 && currentDiceIndex.value === 0) return; // Stop at first dice
 
-      toggleAnimation('change', 160);
+      toggleAnimation('change', 165);
       currentDiceIndex.value = (currentDiceIndex.value + direction + diceNames.length) % diceNames.length;
+      rollResult.value = 1;
     };
 
     //Function to roll selected dice
