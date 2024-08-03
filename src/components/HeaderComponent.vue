@@ -30,7 +30,7 @@ header {
   color: rgba($color: #000000, $alpha: 0.3);
 
   p {
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 10px;
   }
 
@@ -54,7 +54,7 @@ header {
       outline: none;
 
       &:hover {
-        color: rgba($color: #000000, $alpha: 1);
+        color: rgba($color: #000000, $alpha: 0.5);
       }
     }
   }
