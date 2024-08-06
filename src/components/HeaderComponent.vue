@@ -1,6 +1,8 @@
 <template>
   <header>
-    <p>Made by Viktor Kysil</p>
+    <span>
+      <span class="logo">QuickDice</span> / By Viktor Kysil
+    </span>
     <div class="icons-container">
       <span class="icon">
         <a href="https://www.instagram.com/vitkarino">
@@ -12,11 +14,35 @@
           <Icon icon="mdi:github" class="social-icon" />
         </a>
       </span>
+      <span class="icon">
+        <a @click="toggleTheme()">
+          <Icon :icon="theme === 'light' ? 'ph:moon' : 'ph:sun'" class="social-icon" />
+        </a>
+      </span>
     </div>
   </header>
 </template>
 
-<script></script>
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const theme = ref('light');
+
+onMounted(() => {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    theme.value = savedTheme;
+    document.documentElement.classList.add(theme.value);
+  }
+});
+
+function toggleTheme() {
+  theme.value = theme.value === 'light' ? 'dark' : 'light';
+  document.documentElement.classList.toggle('dark', theme.value === 'dark');
+  console.log(theme.value);
+  localStorage.setItem('theme', theme.value);
+}
+</script>
 
 <style scoped lang="scss">
 header {
@@ -27,34 +53,31 @@ header {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  color: rgba($color: #000000, $alpha: 0.3);
+  color: var(--header-text-color);
 
-  p {
+  span {
     font-size: 16px;
     margin-bottom: 10px;
+
+    .logo {
+      font-weight: 800;
+    }
   }
 
   .icon {
     font-size: 24px;
-    margin: 0 5px 0 5px;
+    margin: 0 5px;
     transition: 0.1s all;
     cursor: pointer;
 
     a {
-      color: rgba($color: #000000, $alpha: 0.2);
+      color: var(--header-text-color);
       transition: 0.2s;
-
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
       user-select: none;
       outline: none;
 
       &:hover {
-        color: rgba($color: #000000, $alpha: 0.5);
+        color: var(--header-text-hover-color);
       }
     }
   }

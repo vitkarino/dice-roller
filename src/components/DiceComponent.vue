@@ -1,36 +1,42 @@
 <template>
   <div class="dice-roller">
-    <div
-      class="dice"
-      @click="rollDice()"
-      :class="{
-        changeDiceAnimation: isChangingDice,
-        rollAnimation: isRolling,
-      }"
-    >
-      <img class="dice-icon" :src="`/${diceName}.svg`" alt="Dice icon" />
-      <span class="roll-result" :class="{ lowerPosition: isWrongSizing }">{{
-        rollResult
-      }}</span>
+    <div class="dice" @click="rollDice" :class="diceClasses">
+      <template v-if="diceName === 'd100'">
+        <div
+          v-for="(result, index) in ['tens', 'units']"
+          :key="index"
+          class="d100-die"
+          :class="{ rollAnimation: isRolling }"
+        >
+          <img class="dice-icon" src="/d10.svg" :alt="`${result} die`" />
+          <span class="roll-result" :class="result">{{
+            d100Results[result]
+          }}</span>
+        </div>
+      </template>
+      <template v-else>
+        <img class="dice-icon" :src="`/${diceName}.svg`" alt="Dice icon" />
+        <span class="roll-result" :class="{ lowerPosition: isWrongSizing }">{{
+          rollResult
+        }}</span>
+      </template>
     </div>
   </div>
   <div class="dice-selection">
     <button
       class="select-button"
       id="left"
-      @click="previousDice"
-      :disabled="diceName === 'd4'"
+      @click="changeDice(-1)"
+      :disabled="currentDiceIndex === 0"
     >
       <Icon class="arrow-left" icon="ep:arrow-up" rotate="270deg" />
     </button>
-    <span class="dice-name" v-if="diceName !== 'd'">{{ diceName }}</span>
+    <span v-if="diceName !== 'd'" class="dice-name">{{ diceName }}</span>
     <div v-else class="custom-dice-input">
       <span class="d-prefix">d</span>
       <input
-        v-model="customSides"
+        v-model.number="customSides"
         type="number"
-        min="2"
-        max="1000"
         class="custom-sides-input"
         @input="handleCustomSidesInput"
         ref="customInput"
@@ -39,8 +45,8 @@
     <button
       class="select-button"
       id="right"
-      @click="nextDice"
-      :disabled="diceName === 'd'"
+      @click="changeDice(1)"
+      :disabled="currentDiceIndex === diceNames.length - 1"
     >
       <Icon class="arrow-right" icon="ep:arrow-up" rotate="90deg" />
     </button>
@@ -48,94 +54,95 @@
   <button class="roll-button" @click="rollDice">Roll</button>
 </template>
 
-
-<script>
+<script setup>
 import { ref, computed, onMounted, watch } from "vue";
 
-export default {
-  setup() {
-    const diceNames = ["d4", "d6", "d8", "d10", "d12", "d20", "d100", "d"];
-    const rollResult = ref(1);
-    const isChangingDice = ref(false);
-    const isRolling = ref(false);
-    const currentDiceIndex = ref(0);
-    const customSides = ref(2);
-    const customInput = ref(null);
-    const diceName = computed(() => `${diceNames[currentDiceIndex.value]}`);
+const diceNames = ["d2", "d4", "d6", "d8", "d10", "d12", "d20", "d100", "d"];
+const rollResult = ref(1);
+const isChangingDice = ref(false);
+const isRolling = ref(false);
+const currentDiceIndex = ref(0);
+const customSides = ref(20);
+const customInput = ref(null);
+const d100Results = ref({ tens: "00", units: "00" });
 
-    const isWrongSizing = computed(() => ['d12', 'd4'].includes(diceName.value));
+const diceName = computed(() => diceNames[currentDiceIndex.value]);
+const isWrongSizing = computed(() => ["d12", "d4"].includes(diceName.value));
 
-    onMounted(() => {
-      diceNames.forEach((dice) => {
-        const img = new Image();
-        img.src = `/${dice}.svg`;
-      });
-      resizeInput();
-    });
+const diceClasses = computed(() => ({
+  changeDiceAnimation: isChangingDice.value,
+  rollAnimation:
+    isRolling.value && diceName.value !== "d2" && diceName.value !== "d100",
+  flipAnimation: isRolling.value && diceName.value === "d2",
+}));
 
-    watch(customSides, resizeInput);
+onMounted(() => {
+  diceNames.forEach((dice) => {
+    new Image().src = `/${dice}.svg`;
+  });
+  resizeInput();
+});
 
-    function resizeInput() {
-      if (customInput.value) {
-        const minWidth = 40;
-        const inputWidth = Math.max(minWidth, customSides.value.toString().length * 15);
-        customInput.value.style.width = `${inputWidth}px`;
-      }
-    }
+watch(customSides, resizeInput);
 
-    const toggleAnimation = (type, duration) => {
-      if (type === 'roll') {
-        isRolling.value = true;
-        setTimeout(() => isRolling.value = false, duration);
+function resizeInput() {
+  if (customInput.value) {
+    const minWidth = 40;
+    const inputWidth = Math.max(
+      minWidth,
+      customSides.value.toString().length * 15
+    );
+    customInput.value.style.width = `${inputWidth}px`;
+  }
+}
+
+function toggleAnimation(type, duration) {
+  const animationState = type === "change" ? isChangingDice : isRolling;
+  animationState.value = true;
+  setTimeout(() => (animationState.value = false), duration);
+}
+
+function changeDice(direction) {
+  if (isChangingDice.value || isRolling.value) return;
+  toggleAnimation("change", 165);
+  currentDiceIndex.value += direction;
+  rollResult.value = 1;
+}
+
+function rollDice() {
+  if (isChangingDice.value || isRolling.value) return;
+  const isD2 = diceName.value === "d2";
+  toggleAnimation(isD2 ? "flip" : "roll", isD2 ? 1000 : 500);
+
+  setTimeout(
+    () => {
+      if (diceName.value === "d") {
+        rollResult.value = Math.floor(Math.random() * customSides.value + 1);
+      } else if (diceName.value === "d100") {
+        d100Results.value = {
+          tens: Math.floor(Math.random() * 10)
+            .toString()
+            .padStart(2, "0"),
+          units: Math.floor(Math.random() * 10)
+            .toString()
+            .padStart(2, "0"),
+        };
+        rollResult.value = parseInt(
+          d100Results.value.tens + d100Results.value.units
+        );
       } else {
-        isChangingDice.value = true;
-        setTimeout(() => isChangingDice.value = false, duration);
+        rollResult.value = Math.floor(
+          Math.random() * parseInt(diceName.value.slice(1)) + 1
+        );
       }
-    };
+    },
+    isD2 ? 500 : 250
+  );
+}
 
-    const changeDice = (direction) => {
-      if (isChangingDice.value || isRolling.value) return;
-      if (direction === 1 && currentDiceIndex.value === diceNames.length - 1) return; 
-      if (direction === -1 && currentDiceIndex.value === 0) return; 
-
-      toggleAnimation('change', 165);
-      currentDiceIndex.value = (currentDiceIndex.value + direction + diceNames.length) % diceNames.length;
-      rollResult.value = 1;
-    };
-
-    const rollDice = () => {
-      if (isChangingDice.value || isRolling.value) return;
-      toggleAnimation('roll', 500)
-      setTimeout(() => {
-        if (diceName.value === 'd') {
-          rollResult.value = Math.floor(Math.random() * customSides.value + 1);
-        } else {
-          rollResult.value = Math.floor(Math.random() * parseInt(diceNames[currentDiceIndex.value].slice(1)) + 1);
-        }
-      }, 150);
-    };
-
-    const handleCustomSidesInput = () => {
-      if (customSides.value < 2) customSides.value = 2;
-      if (customSides.value > 1000) customSides.value = 1000;
-    };
-
-    return { 
-      diceName, 
-      rollResult, 
-      rollDice, 
-      nextDice: () => changeDice(1), 
-      previousDice: () => changeDice(-1), 
-      isWrongSizing, 
-      isChangingDice, 
-      isRolling,
-      customSides,
-      customInput,
-      resizeInput,
-      handleCustomSidesInput
-    };
-  },
-};
+function handleCustomSidesInput() {
+  customSides.value = Math.max(2, Math.min(customSides.value, 1000));
+}
 </script>
 
 <style scoped lang="scss">
@@ -160,9 +167,24 @@ export default {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    color: var(--text-color);
+
+    .d100-die {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      &.rollAnimation {
+        animation: roll 0.5s ease-in-out;
+      }
+    }
 
     &.rollAnimation {
       animation: roll 0.5s ease-in-out;
+    }
+
+    &.flipAnimation {
+      animation: flip 1s ease-in-out;
     }
 
     &.changeDiceAnimation {
@@ -171,15 +193,29 @@ export default {
 
     .dice-icon {
       width: 150px;
+      filter: invert(0); /* Default for light mode */
+
+      .dark & {
+        filter: invert(1); /* Invert colors for dark mode */
+      }
     }
 
     .roll-result {
       position: absolute;
       font-size: 42px;
       font-weight: 800;
+      text-align: center;
+      width: 100%;
+      left: 0;
+      right: 0;
 
       &.lowerPosition {
         transform: translateY(7px);
+      }
+
+      &.tens,
+      &.units {
+        width: auto;
       }
     }
   }
@@ -190,7 +226,16 @@ export default {
     transform: rotate(0deg);
   }
   100% {
-    transform: rotate(360deg);
+    transform: rotateZ(360deg);
+  }
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateY(0);
+  }
+  100% {
+    transform: rotateY(720deg);
   }
 }
 
@@ -207,6 +252,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  color: var(--text-color);
 
   .select-button {
     height: 30px;
@@ -258,19 +304,20 @@ export default {
       border-radius: 5px;
       outline: none;
       box-sizing: border-box;
-      background-color: rgba(0, 0, 0, 0.03);
+      background-color: var(--input-color);
+      color: var(--text-color);
       transition: 0.2s all;
-      -moz-appearance: textfield;
+
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
       }
       &:hover {
-        background-color: rgba(0, 0, 0, 0.06);
+        background-color: var(--input-hover-color);
       }
       &:focus {
-        background-color: rgba(0, 0, 0, 0.08);
+        background-color: var(--input-focus-color);
       }
     }
   }
