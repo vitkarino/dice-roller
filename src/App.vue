@@ -20,8 +20,8 @@ export default {
 :root {
     --background-color: #f4f4f4;
     --text-color: #383838;
-    --header-text-color: #c7c7c7;
-    --header-text-hover-color: #878787;
+    --header-text-color: #a4a4a4;
+    --header-text-hover-color: #707070;
     --button-hover-background: #e8e8e8;
     --button-active-background: #e6e6e6;
     --input-color: #f1f1f1;
@@ -32,7 +32,7 @@ export default {
   .dark {
     --background-color: #232323;
     --text-color: #e3e3e3;
-    --header-text-color: #7b7b7b;
+    --header-text-color: #9a9a9a;
     --header-text-hover-color: #e8e8e8;
     --button-hover-background: #343434;
     --button-active-background: #464646;

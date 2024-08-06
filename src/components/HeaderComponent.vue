@@ -56,7 +56,7 @@ header {
   color: var(--header-text-color);
 
   span {
-    font-size: 16px;
+    font-size: 18px;
     margin-bottom: 10px;
 
     .logo {
