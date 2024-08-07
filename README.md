@@ -2,7 +2,7 @@
 
 # Rolling dice made quick and easy.
 
-QuickDice is a dice rolling website with a sleek design that makes rolling dice quick and easy.
+QuickDice is a dice rolling website with a simplistic design that makes rolling dice quick and easy.
 
 ## Features
 
