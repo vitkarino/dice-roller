@@ -47,7 +47,7 @@ function toggleTheme() {
 
 <style scoped lang="scss">
 header {
-  height: 10vh;
+  height: 12vh;
   width: 100%;
   display: flex;
   position: fixed;
@@ -58,6 +58,7 @@ header {
 
   span {
     font-size: 18px;
+    -webkit-tap-highlight-color: transparent;
 
     .logo {
       font-weight: 600;
