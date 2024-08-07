@@ -1,6 +1,6 @@
 ![QuickDice](https://github.com/user-attachments/assets/6d3aec46-1bc4-446e-b203-0b9664a7fc7c)
 
-# Roll simple
+# Rolling dice made quick and easy.
 
 QuickDice is a dice rolling website with a sleek design that makes rolling dice quick and easy.
 
