@@ -15,28 +15,28 @@ export default {
 </script>
 
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inknut+Antiqua:wght@300;400;500;600;700;800;900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 :root {
-    --background-color: #f4f4f4;
+    --background-color: #e9e9e9;
     --text-color: #383838;
     --header-text-color: #a4a4a4;
     --header-text-hover-color: #707070;
-    --button-hover-background: #e8e8e8;
-    --button-active-background: #e6e6e6;
-    --input-color: #f1f1f1;
-    --input-hover-color: #e7e7e7;
-    --input-focus-color: #dbdbdb;
+    --button-hover-background: #e0e0e0;
+    --button-active-background: #cecece;
+    --input-color: #d8d8d8;
+    --input-hover-color: #d6d6d6;
+    --input-focus-color: #cccccc;
   }
   
   .dark {
     --background-color: #232323;
-    --text-color: #e3e3e3;
+    --text-color: #ffffff;
     --header-text-color: #9a9a9a;
     --header-text-hover-color: #e8e8e8;
     --button-hover-background: #343434;
     --button-active-background: #464646;
-    --input-color: #2d2d2d;
+    --input-color: #303030;
     --input-hover-color: #383838;
     --input-focus-color: #454545;
 }

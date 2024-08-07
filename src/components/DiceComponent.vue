@@ -193,10 +193,10 @@ function handleCustomSidesInput() {
 
     .dice-icon {
       width: 150px;
-      filter: invert(0); /* Default for light mode */
+      filter: invert(0) contrast(0.6);
 
       .dark & {
-        filter: invert(1); /* Invert colors for dark mode */
+        filter: invert(1); 
       }
     }
 

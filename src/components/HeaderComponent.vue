@@ -1,8 +1,6 @@
 <template>
   <header>
-    <span>
-      <span class="logo">QuickDice</span> / By Viktor Kysil
-    </span>
+    <span> <span class="logo">QuickDice</span> | By Viktor Kysil </span>
     <div class="icons-container">
       <span class="icon">
         <a href="https://www.instagram.com/vitkarino">
@@ -16,7 +14,10 @@
       </span>
       <span class="icon">
         <a @click="toggleTheme()">
-          <Icon :icon="theme === 'light' ? 'ph:moon' : 'ph:sun'" class="social-icon" />
+          <Icon
+            :icon="theme === 'light' ? 'ph:moon' : 'ph:sun'"
+            class="social-icon"
+          />
         </a>
       </span>
     </div>
@@ -24,12 +25,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
-const theme = ref('light');
+const theme = ref("light");
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme');
+  const savedTheme = localStorage.getItem("theme");
   if (savedTheme) {
     theme.value = savedTheme;
     document.documentElement.classList.add(theme.value);
@@ -37,16 +38,16 @@ onMounted(() => {
 });
 
 function toggleTheme() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light';
-  document.documentElement.classList.toggle('dark', theme.value === 'dark');
+  theme.value = theme.value === "light" ? "dark" : "light";
+  document.documentElement.classList.toggle("dark", theme.value === "dark");
   console.log(theme.value);
-  localStorage.setItem('theme', theme.value);
+  localStorage.setItem("theme", theme.value);
 }
 </script>
 
 <style scoped lang="scss">
 header {
-  height: 12vh;
+  height: 10vh;
   width: 100%;
   display: flex;
   position: fixed;
@@ -57,10 +58,10 @@ header {
 
   span {
     font-size: 18px;
-    margin-bottom: 10px;
 
     .logo {
-      font-weight: 800;
+      font-weight: 600;
+      font-family: "Inknut Antiqua", sans-serif;
     }
   }
 
@@ -71,6 +72,9 @@ header {
     cursor: pointer;
 
     a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       color: var(--header-text-color);
       transition: 0.2s;
       user-select: none;
