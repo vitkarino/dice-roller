@@ -111,6 +111,12 @@ function changeDice(direction) {
 
 function rollDice() {
   if (isChangingDice.value || isRolling.value) return;
+
+  if (diceName.value === "d" && (!customSides.value || customSides.value < 1)) {
+    customSides.value = 2;
+    customInput.value.value = 2;
+  }
+
   const isD2 = diceName.value === "d2";
   toggleAnimation(isD2 ? "flip" : "roll", isD2 ? 1000 : 500);
 
@@ -140,8 +146,9 @@ function rollDice() {
   );
 }
 
-function handleCustomSidesInput() {
-  customSides.value = Math.max(2, Math.min(customSides.value, 1000));
+function handleCustomSidesInput(event) {
+  let value = parseInt(event.target.value, 10);
+  customSides.value = Math.max(1, Math.min(value, 1000));
 }
 </script>
 
@@ -196,7 +203,7 @@ function handleCustomSidesInput() {
       filter: invert(0) contrast(0.6);
 
       .dark & {
-        filter: invert(1); 
+        filter: invert(1);
       }
     }
 
